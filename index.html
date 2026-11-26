@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyFlow - Student Task & Study Management App</title>
+  <meta name="description" content="StudyFlow is a modern academic task manager, assignment tracker, timetable organizer, and Pomodoro study companion for students.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
+    .pulse-glow {
+      box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+  <!-- Top App Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-indigo-500/20">
+          🎓
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">StudyFlow</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">LIVE DEMO</span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">Student Academic Task & Focus Manager</p>
+        </div>
+      </div>
+
+      <!-- Center Desktop Navigation Tabs -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl text-xs font-semibold">
+        <button onclick="switchTab('dashboard')" id="navTopDashboard" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 text-white font-bold transition">📊 Dashboard</button>
+        <button onclick="switchTab('tasks')" id="navTopTasks" class="px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">📝 Tasks</button>
+        <button onclick="switchTab('timetable')" id="navTopTimetable" class="px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">📅 Timetable</button>
+        <button onclick="switchTab('focus')" id="navTopFocus" class="px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">⏱️ Pomodoro</button>
+        <button onclick="switchTab('courses')" id="navTopCourses" class="px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">📚 Courses</button>
+        <button onclick="switchTab('notes')" id="navTopNotes" class="px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">💡 Notes</button>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="toggleDarkMode()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:border-indigo-500 transition" title="Toggle Dark/Light Mode">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <a href="https://github.com/naresh-alladi-09/flutterproject" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white shadow transition">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span class="hidden sm:inline">GitHub</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main App Layout Container -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 pb-24 md:pb-8">
+
+    <!-- ================= 1. TAB: DASHBOARD ================= -->
+    <section id="viewDashboard" class="space-y-6">
+      
+      <!-- Greeting & Header Banner -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight" id="dashGreeting">Good Day, Alex! ☀️</h1>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5" id="dashCurrentDate">Semester 4 • Computer Science</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="openAddTaskModal()" class="px-4 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md shadow-indigo-500/20 transition flex items-center gap-1.5">
+            <span>+</span> Add Assignment
+          </button>
+        </div>
+      </div>
+
+      <!-- Pulse Hero Card & Quick Stats Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Pulse Banner (7 cols on desktop) -->
+        <div class="lg:col-span-7 bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 text-white rounded-3xl p-6 shadow-xl pulse-glow relative overflow-hidden flex flex-col justify-between">
+          <div class="flex items-start justify-between gap-4">
+            <div class="space-y-1.5">
+              <span class="inline-flex items-center gap-1 text-[11px] font-bold bg-white/20 backdrop-blur-md px-3 py-1 rounded-full uppercase tracking-wider">
+                ⚡ Daily Study Pulse
+              </span>
+              <h2 class="text-xl sm:text-2xl font-black mt-2" id="pulseFraction">3 of 5 Tasks Done</h2>
+              <p class="text-xs sm:text-sm text-indigo-100" id="pulseMinutes">🔥 75 minutes of deep focus logged today</p>
+            </div>
+
+            <!-- SVG Gauge -->
+            <div class="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center flex-shrink-0">
+              <svg class="w-20 h-20 sm:w-24 sm:h-24 transform -rotate-90">
+                <circle cx="48" cy="48" r="40" stroke="rgba(255,255,255,0.2)" stroke-width="7" fill="none" />
+                <circle id="pulseGauge" cx="48" cy="48" r="40" stroke="#ffffff" stroke-width="7" fill="none"
+                        stroke-dasharray="251" stroke-dashoffset="100" stroke-linecap="round" class="transition-all duration-700" />
+              </svg>
+              <span class="absolute font-black text-sm sm:text-base" id="pulsePercentage">60%</span>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-col sm:flex-row gap-2.5">
+            <button onclick="switchTab('focus')" class="flex-1 py-2.5 px-4 bg-white text-indigo-700 font-extrabold text-xs sm:text-sm rounded-xl shadow hover:bg-slate-100 transition flex items-center justify-center gap-2">
+              ⏱️ Start Pomodoro Session
+            </button>
+            <button onclick="switchTab('tasks')" class="py-2.5 px-4 bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm rounded-xl transition flex items-center justify-center gap-1.5">
+              View All Tasks →
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Quick Stat Cards (5 cols on desktop) -->
+        <div class="lg:col-span-5 grid grid-cols-2 gap-3.5">
+          <div onclick="setTaskFilter('Today'); switchTab('tasks')" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:border-indigo-500/50 cursor-pointer transition">
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-semibold">
+              <span>Due Today</span>
+              <span class="text-indigo-500 font-bold text-base">📅</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-extrabold mt-2 text-slate-900 dark:text-white" id="statDueToday">1</div>
+            <p class="text-[11px] text-slate-400 mt-1">Assignments due</p>
+          </div>
+
+          <div onclick="setTaskFilter('Overdue'); switchTab('tasks')" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:border-red-500/50 cursor-pointer transition">
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-semibold">
+              <span>Overdue</span>
+              <span class="text-red-500 font-bold text-base">⚠️</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-extrabold mt-2 text-red-500" id="statOverdue">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Requires attention</p>
+          </div>
+
+          <div onclick="setTaskFilter('Upcoming'); switchTab('tasks')" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:border-amber-500/50 cursor-pointer transition">
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-semibold">
+              <span>Pending</span>
+              <span class="text-amber-500 font-bold text-base">⏳</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-extrabold mt-2 text-amber-500" id="statPending">2</div>
+            <p class="text-[11px] text-slate-400 mt-1">In progress</p>
+          </div>
+
+          <div onclick="setTaskFilter('Completed'); switchTab('tasks')" class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:border-emerald-500/50 cursor-pointer transition">
+            <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-semibold">
+              <span>Completed</span>
+              <span class="text-emerald-500 font-bold text-base">✅</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-extrabold mt-2 text-emerald-500" id="statCompleted">3</div>
+            <p class="text-[11px] text-slate-400 mt-1">Tasks finished</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Two Column Bottom Section: Upcoming Deadlines + Today's Class Timetable -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        
+        <!-- Left: Upcoming Deadlines -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-sm sm:text-base flex items-center gap-2">
+              <span>⏰</span> Upcoming Deadlines
+            </h3>
+            <button onclick="switchTab('tasks')" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">View All</button>
+          </div>
+          <div class="space-y-2.5" id="dashDeadlinesList">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Right: Today's Lectures -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-sm sm:text-base flex items-center gap-2">
+              <span>🏫</span> Today's Class Schedule
+            </h3>
+            <button onclick="switchTab('timetable')" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Full Timetable</button>
+          </div>
+          <div class="space-y-2.5" id="dashTodayClassesList">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= 2. TAB: TASKS ================= -->
+    <section id="viewTasks" class="hidden space-y-5">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Academic Tasks & Assignments</h1>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Track coursework, problem sets, and lab submissions</p>
+        </div>
+        <button onclick="openAddTaskModal()" class="px-4 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md transition flex items-center gap-1.5 self-start sm:self-auto">
+          <span>+</span> New Task
+        </button>
+      </div>
+
+      <!-- Filters & Search Bar -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800">
+        
+        <!-- Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto text-xs pb-1 sm:pb-0">
+          <button onclick="setTaskFilter('All')" id="btnTabAll" class="px-3.5 py-1.5 rounded-xl font-bold bg-indigo-600 text-white shadow-sm transition">All (5)</button>
+          <button onclick="setTaskFilter('Today')" id="btnTabToday" class="px-3.5 py-1.5 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Due Today</button>
+          <button onclick="setTaskFilter('Upcoming')" id="btnTabUpcoming" class="px-3.5 py-1.5 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Upcoming</button>
+          <button onclick="setTaskFilter('Completed')" id="btnTabCompleted" class="px-3.5 py-1.5 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Completed</button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative">
+          <input type="text" id="taskSearchInput" oninput="handleTaskSearch(this.value)" placeholder="Search tasks, subjects..." class="w-full sm:w-64 pl-8 pr-3 py-1.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500">
+          <span class="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+        </div>
+      </div>
+
+      <!-- Main Tasks List -->
+      <div class="space-y-3" id="taskListContainer">
+        <!-- Rendered by JS -->
+      </div>
+
+    </section>
+
+
+    <!-- ================= 3. TAB: TIMETABLE ================= -->
+    <section id="viewTimetable" class="hidden space-y-5">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Weekly Class Timetable</h1>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Lectures, lab hours, instructors & classroom locations</p>
+        </div>
+        <button onclick="openAddClassModal()" class="px-4 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md transition flex items-center gap-1.5 self-start sm:self-auto">
+          <span>+</span> Add Class Period
+        </button>
+      </div>
+
+      <!-- Day Selector Strip -->
+      <div class="grid grid-cols-5 gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 rounded-2xl text-xs font-bold text-center">
+        <button onclick="selectWeekday(1)" id="dayTab1" class="py-2.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-slate-600 dark:text-slate-300 transition">Mon</button>
+        <button onclick="selectWeekday(2)" id="dayTab2" class="py-2.5 rounded-xl bg-indigo-600 text-white shadow-sm transition">Tue</button>
+        <button onclick="selectWeekday(3)" id="dayTab3" class="py-2.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-slate-600 dark:text-slate-300 transition">Wed</button>
+        <button onclick="selectWeekday(4)" id="dayTab4" class="py-2.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-slate-600 dark:text-slate-300 transition">Thu</button>
+        <button onclick="selectWeekday(5)" id="dayTab5" class="py-2.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-slate-600 dark:text-slate-300 transition">Fri</button>
+      </div>
+
+      <!-- Day Class List -->
+      <div class="space-y-3" id="timetableListContainer">
+        <!-- Rendered by JS -->
+      </div>
+
+    </section>
+
+
+    <!-- ================= 4. TAB: FOCUS TIMER (POMODORO) ================= -->
+    <section id="viewFocus" class="hidden space-y-6 max-w-xl mx-auto text-center">
+      
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Pomodoro Study Focus</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Deep study blocks linked to your active assignments</p>
+      </div>
+
+      <!-- Timer Mode Switcher -->
+      <div class="flex items-center p-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-bold max-w-sm mx-auto shadow-sm">
+        <button onclick="setPomodoroMode('focus')" id="modeFocusBtn" class="flex-1 py-2 rounded-xl bg-indigo-600 text-white shadow transition">Focus (25m)</button>
+        <button onclick="setPomodoroMode('short')" id="modeShortBtn" class="flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">Short Break (5m)</button>
+        <button onclick="setPomodoroMode('long')" id="modeLongBtn" class="flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition">Long Break (15m)</button>
+      </div>
+
+      <!-- Linked Task Dropdown Card -->
+      <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="text-indigo-500 font-bold text-sm">🎯 Focusing on:</span>
+          <span class="font-bold text-slate-900 dark:text-white" id="pomoLinkedTaskTitle">Flutter Task Manager App Project (CS305)</span>
+        </div>
+        <span class="text-[10px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold px-2 py-0.5 rounded-full">Active</span>
+      </div>
+
+      <!-- Circular Timer Dial -->
+      <div class="py-6 flex flex-col items-center justify-center">
+        <div class="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
+          <svg class="w-64 h-64 sm:w-72 sm:h-72 transform -rotate-90">
+            <circle cx="144" cy="144" r="120" stroke="rgba(148, 163, 184, 0.2)" stroke-width="12" fill="none" />
+            <circle id="pomoSvgRing" cx="144" cy="144" r="120" stroke="#6366f1" stroke-width="12" fill="none"
+                    stroke-dasharray="754" stroke-dashoffset="0" stroke-linecap="round" class="transition-all duration-300" />
+          </svg>
+          <div class="absolute flex flex-col items-center">
+            <span class="text-5xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white font-mono" id="pomoTimerText">25:00</span>
+            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mt-2" id="pomoModeText">DEEP STUDY</span>
+            <span class="text-xs text-slate-400 mt-1" id="pomoSessionCounter">Session #1</span>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-5 mt-6">
+          <button onclick="resetPomo()" title="Reset" class="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-indigo-500 transition shadow-sm">
+            🔄
+          </button>
+          <button onclick="togglePomo()" id="pomoMainPlayBtn" class="w-20 h-20 rounded-3xl bg-indigo-600 text-white font-black text-3xl flex items-center justify-center shadow-xl shadow-indigo-500/30 hover:bg-indigo-700 transition">
+            ▶
+          </button>
+          <button onclick="skipPomo()" title="Skip" class="w-12 h-12 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-indigo-500 transition shadow-sm">
+            ⏭
+          </button>
+        </div>
+      </div>
+
+      <!-- Ambient Sound Selector -->
+      <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-left text-xs space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold flex items-center gap-1.5">🎧 Study Ambience Sound:</span>
+          <span id="activeAmbienceLabel" class="text-indigo-600 dark:text-indigo-400 font-bold">Gentle Rain 🌧️</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="setAmbience('Off')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-800 transition">Off</button>
+          <button onclick="setAmbience('Gentle Rain 🌧️')" class="px-3 py-1.5 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-500/30">Rain 🌧️</button>
+          <button onclick="setAmbience('Campus Library 📚')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-800 transition">Library 📚</button>
+          <button onclick="setAmbience('Coffee Shop ☕')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-800 transition">Cafe ☕</button>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ================= 5. TAB: COURSES ================= -->
+    <section id="viewCourses" class="hidden space-y-5">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Courses & Enrolled Subjects</h1>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Faculty, rooms, and assignment progress by course</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="coursesGridContainer">
+        <!-- Rendered by JS -->
+      </div>
+
+    </section>
+
+
+    <!-- ================= 6. TAB: NOTES ================= -->
+    <section id="viewNotes" class="hidden space-y-5">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Study Notes & Formula Cheats</h1>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Quick formula sheets, key theorems, and lecture highlights</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="notesGridContainer">
+        <!-- Rendered by JS -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Mobile Bottom Tab Bar (Visible on mobile only) -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-3 py-2 flex items-center justify-around text-[10px] font-bold text-slate-500 dark:text-slate-400">
+    <button onclick="switchTab('dashboard')" id="navMobileDashboard" class="flex flex-col items-center gap-0.5 text-indigo-600">
+      <span class="text-base">📊</span>
+      <span>Home</span>
+    </button>
+    <button onclick="switchTab('tasks')" id="navMobileTasks" class="flex flex-col items-center gap-0.5">
+      <span class="text-base">📝</span>
+      <span>Tasks</span>
+    </button>
+    <button onclick="switchTab('timetable')" id="navMobileTimetable" class="flex flex-col items-center gap-0.5">
+      <span class="text-base">📅</span>
+      <span>Classes</span>
+    </button>
+    <button onclick="switchTab('focus')" id="navMobileFocus" class="flex flex-col items-center gap-0.5">
+      <span class="text-base">⏱️</span>
+      <span>Focus</span>
+    </button>
+    <button onclick="switchTab('courses')" id="navMobileCourses" class="flex flex-col items-center gap-0.5">
+      <span class="text-base">📚</span>
+      <span>Courses</span>
+    </button>
+  </div>
+
+  <!-- Add Task Modal -->
+  <div id="addTaskModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-extrabold text-base">New Academic Assignment</h3>
+        <button onclick="closeAddTaskModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 dark:text-slate-300">Task Title *</label>
+          <input type="text" id="modalTaskTitle" placeholder="e.g. Physics Lab Report" class="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 dark:text-slate-300">Course / Subject</label>
+          <select id="modalTaskCourse" class="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500">
+            <option value="Mobile App Dev (CS305)">Mobile App Dev (CS305)</option>
+            <option value="Calculus (MATH201)">Calculus (MATH201)</option>
+            <option value="Modern Physics (PHYS102)">Modern Physics (PHYS102)</option>
+            <option value="Data Structures (CS101)">Data Structures (CS101)</option>
+            <option value="Academic Writing (ENG105)">Academic Writing (ENG105)</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 dark:text-slate-300">Priority</label>
+            <select id="modalTaskPriority" class="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500">
+              <option value="Urgent">Urgent</option>
+              <option value="High" selected>High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 dark:text-slate-300">Due Date</label>
+            <input type="text" id="modalTaskDue" value="Tomorrow 23:59" class="w-full mt-1 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-indigo-500">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button onclick="closeAddTaskModal()" class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-700">Cancel</button>
+        <button onclick="submitNewTask()" class="px-5 py-2 text-xs font-bold bg-indigo-600 text-white rounded-xl shadow-md hover:bg-indigo-700 transition">Create Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Logic Script -->
+  <script>
+    // State
+    let currentTab = 'dashboard';
+    let currentTaskFilter = 'All';
+    let searchQuery = '';
+
+    let tasks = [
+      { id: 1, title: 'Flutter Task Manager App Project', course: 'Mobile App Dev (CS305)', priority: 'Urgent', due: 'Tomorrow 23:59', completed: false, subtasksDone: 3, subtasksTotal: 4 },
+      { id: 2, title: 'Calculus Problem Set #4: Derivations', course: 'Calculus (MATH201)', priority: 'High', due: 'Today 18:00', completed: false, subtasksDone: 1, subtasksTotal: 3 },
+      { id: 3, title: 'Physics Lab Report: Optics & Refraction', course: 'Modern Physics (PHYS102)', priority: 'Medium', due: 'Friday 17:00', completed: true, subtasksDone: 2, subtasksTotal: 2 },
+      { id: 4, title: 'Midterm Prep: Trees, Graphs, Dijkstra', course: 'Data Structures (CS101)', priority: 'High', due: 'In 5 days', completed: true, subtasksDone: 2, subtasksTotal: 2 },
+      { id: 5, title: 'Submit Research Essay Outline', course: 'Academic Writing (ENG105)', priority: 'Low', due: 'Completed', completed: true, subtasksDone: 2, subtasksTotal: 2 }
+    ];
+
+    const weeklySchedules = {
+      2: [ // Tuesday
+        { time: '10:00 - 12:00', course: 'Mobile App Development (CS305)', room: 'Tech Hub Lab 3', teacher: 'Dr. Grace Hopper', color: '#6366f1' },
+        { time: '14:00 - 15:30', course: 'Modern Physics (PHYS102)', room: 'Science Hall 105', teacher: 'Prof. Richard Feynman', color: '#f59e0b' }
+      ],
+      1: [ // Monday
+        { time: '09:00 - 10:30', course: 'Data Structures & Algorithms (CS101)', room: 'Computing Lab B4', teacher: 'Prof. Alan Turing', color: '#06b6d4' },
+        { time: '11:00 - 12:30', course: 'Calculus & Linear Algebra (MATH201)', room: 'Math 302', teacher: 'Dr. Katherine Johnson', color: '#10b981' }
+      ],
+      3: [ // Wednesday
+        { time: '09:00 - 10:30', course: 'Data Structures & Algorithms (CS101)', room: 'Computing Lab B4', teacher: 'Prof. Alan Turing', color: '#06b6d4' },
+        { time: '13:00 - 14:30', course: 'Academic Writing & Research (ENG105)', room: 'Humanities 210', teacher: 'Prof. Maya Angelou', color: '#8b5cf6' }
+      ],
+      4: [ // Thursday
+        { time: '11:00 - 12:30', course: 'Calculus & Linear Algebra (MATH201)', room: 'Math 302', teacher: 'Dr. Katherine Johnson', color: '#10b981' }
+      ],
+      5: [ // Friday
+        { time: '13:30 - 16:00', course: 'Mobile App Dev Lab (CS305)', room: 'Tech Hub Lab 3', teacher: 'Dr. Grace Hopper', color: '#6366f1' }
+      ]
+    };
+
+    const coursesData = [
+      { code: 'CS305', name: 'Mobile App Development', instructor: 'Dr. Grace Hopper', room: 'Tech Hub Lab 3', color: '#6366f1', tasksPending: 1, tasksDone: 1 },
+      { code: 'MATH201', name: 'Calculus & Linear Algebra', instructor: 'Dr. Katherine Johnson', room: 'Math 302', color: '#10b981', tasksPending: 1, tasksDone: 0 },
+      { code: 'PHYS102', name: 'Modern Physics', instructor: 'Prof. Richard Feynman', room: 'Science Hall 105', color: '#f59e0b', tasksPending: 0, tasksDone: 1 },
+      { code: 'CS101', name: 'Data Structures & Algorithms', instructor: 'Prof. Alan Turing', room: 'Computing Lab B4', color: '#06b6d4', tasksPending: 0, tasksDone: 1 },
+      { code: 'ENG105', name: 'Academic Writing & Research', instructor: 'Prof. Maya Angelou', room: 'Humanities 210', color: '#8b5cf6', tasksPending: 0, tasksDone: 1 }
+    ];
+
+    const notesData = [
+      { title: 'Derivative & Calculus Rules', course: 'MATH201', content: '(uv)\' = u\'v + uv\'\nd/dx[sin x] = cos x\nd/dx[e^x] = e^x\nd/dx[ln x] = 1/x', pinned: true, color: '#10b981' },
+      { title: 'Big-O Notation Complexities', course: 'CS101', content: 'Binary Search: O(log n)\nMergeSort: O(n log n)\nMatrix Multiplication: O(n^3)\nQuickSort Worst Case: O(n^2)', pinned: true, color: '#06b6d4' },
+      { title: 'Flutter State Architecture', course: 'CS305', content: '1. Separate business logic with ChangeNotifier Providers.\n2. Keep models immutable.\n3. Cache and persist locally with SharedPreferences.', pinned: false, color: '#6366f1' }
+    ];
+
+    // Pomodoro Timer State
+    let pomoMode = 'focus';
+    let pomoDuration = 25 * 60;
+    let pomoRemaining = 25 * 60;
+    let pomoInterval = null;
+    let pomoRunning = false;
+    let pomoSessionCount = 0;
+
+    // Initialization
+    function init() {
+      renderTasks();
+      selectWeekday(2);
+      renderCourses();
+      renderNotes();
+      updatePomoDisplay();
+    }
+
+    function renderTasks() {
+      const listContainer = document.getElementById('taskListContainer');
+      const dashDeadlines = document.getElementById('dashDeadlinesList');
+      listContainer.innerHTML = '';
+      dashDeadlines.innerHTML = '';
+
+      let filtered = tasks;
+      if (currentTaskFilter === 'Today') filtered = tasks.filter(t => t.due.includes('Today'));
+      if (currentTaskFilter === 'Upcoming') filtered = tasks.filter(t => !t.completed && !t.due.includes('Completed'));
+      if (currentTaskFilter === 'Completed') filtered = tasks.filter(t => t.completed);
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter(t => t.title.toLowerCase().includes(q) || t.course.toLowerCase().includes(q));
+      }
+
+      const priorityClasses = {
+        Urgent: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/30',
+        High: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/30',
+        Medium: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
+        Low: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
+      };
+
+      filtered.forEach(task => {
+        const pct = Math.round((task.subtasksDone / task.subtasksTotal) * 100);
+        const card = document.createElement('div');
+        card.className = 'p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-start gap-3.5 transition hover:border-indigo-500/40';
+        card.innerHTML = `
+          <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" class="mt-1 w-5 h-5 rounded text-indigo-600 cursor-pointer accent-indigo-600">
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${priorityClasses[task.priority]}">${task.priority}</span>
+              <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">${task.course}</span>
+            </div>
+            <h4 class="text-sm font-extrabold mt-1.5 text-slate-900 dark:text-white ${task.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${task.title}</h4>
+            <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-2">
+              <span class="flex items-center gap-1">📅 ${task.due}</span>
+              <span class="flex items-center gap-1">✅ ${task.subtasksDone}/${task.subtasksTotal} subtasks (${pct}%)</span>
+            </div>
+          </div>
+          <button onclick="deleteTask(${task.id})" class="text-slate-400 hover:text-red-500 text-sm p-1" title="Delete">✕</button>
+        `;
+        listContainer.appendChild(card);
+      });
+
+      // Render dashboard immediate deadlines (pending only)
+      const pendingTasks = tasks.filter(t => !t.completed);
+      pendingTasks.slice(0, 3).forEach(task => {
+        const row = document.createElement('div');
+        row.className = 'p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between';
+        row.innerHTML = `
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full ${task.priority === 'Urgent' ? 'bg-red-500' : 'bg-orange-500'} flex-shrink-0"></span>
+              <h5 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">${task.title}</h5>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">${task.course} • ${task.due}</p>
+          </div>
+          <button onclick="setFocusTask('${task.title}'); switchTab('focus');" class="ml-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-1 rounded-lg hover:bg-indigo-100 transition flex-shrink-0">Focus</button>
+        `;
+        dashDeadlines.appendChild(row);
+      });
+
+      updateMetrics();
+    }
+
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        if (task.completed) task.subtasksDone = task.subtasksTotal;
+        renderTasks();
+      }
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      renderTasks();
+    }
+
+    function updateMetrics() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      const pending = total - completed;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      document.getElementById('pulseFraction').innerText = `${completed} of ${total} Tasks Done`;
+      document.getElementById('pulsePercentage').innerText = `${pct}%`;
+      document.getElementById('statCompleted').innerText = completed;
+      document.getElementById('statPending').innerText = pending;
+
+      // Update SVG gauge stroke (total circumference 251)
+      const offset = 251 - (251 * pct / 100);
+      document.getElementById('pulseGauge').style.strokeDashoffset = offset;
+    }
+
+    function setTaskFilter(filter) {
+      currentTaskFilter = filter;
+      ['All', 'Today', 'Upcoming', 'Completed'].forEach(f => {
+        const btn = document.getElementById('btnTab' + f);
+        if (btn) {
+          if (f === filter) {
+            btn.className = 'px-3.5 py-1.5 rounded-xl font-bold bg-indigo-600 text-white shadow-sm transition';
+          } else {
+            btn.className = 'px-3.5 py-1.5 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition';
+          }
+        }
+      });
+      renderTasks();
+    }
+
+    function handleTaskSearch(val) {
+      searchQuery = val;
+      renderTasks();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      const allTabs = ['Dashboard', 'Tasks', 'Timetable', 'Focus', 'Courses', 'Notes'];
+      
+      allTabs.forEach(t => {
+        const view = document.getElementById('view' + t);
+        const topNav = document.getElementById('navTop' + t);
+        const mobNav = document.getElementById('navMobile' + t);
+
+        if (t.toLowerCase() === tab.toLowerCase()) {
+          view.classList.remove('hidden');
+          if (topNav) {
+            topNav.className = 'px-3.5 py-1.5 rounded-lg bg-indigo-600 text-white font-bold transition';
+          }
+          if (mobNav) {
+            mobNav.className = 'flex flex-col items-center gap-0.5 text-indigo-600';
+          }
+        } else {
+          view.classList.add('hidden');
+          if (topNav) {
+            topNav.className = 'px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition';
+          }
+          if (mobNav) {
+            mobNav.className = 'flex flex-col items-center gap-0.5 text-slate-500 dark:text-slate-400';
+          }
+        }
+      });
+
+      if (tab === 'timetable') selectWeekday(2);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectWeekday(day) {
+      for (let i = 1; i <= 5; i++) {
+        const tab = document.getElementById('dayTab' + i);
+        if (tab) {
+          tab.className = (i === day)
+            ? 'py-2.5 rounded-xl bg-indigo-600 text-white shadow-sm transition'
+            : 'py-2.5 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-slate-600 dark:text-slate-300 transition';
+        }
+      }
+
+      const container = document.getElementById('timetableListContainer');
+      const dashClasses = document.getElementById('dashTodayClassesList');
+      container.innerHTML = '';
+      if (day === 2) dashClasses.innerHTML = '';
+
+      const list = weeklySchedules[day] || [];
+      if (list.length === 0) {
+        container.innerHTML = '<div class="text-center py-12 text-sm text-slate-400">☕ No scheduled lectures on this day. Great time for deep focus!</div>';
+        return;
+      }
+
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between';
+        card.innerHTML = `
+          <div class="flex items-center gap-3.5">
+            <div class="w-1.5 h-12 rounded-full" style="background-color: ${item.color}"></div>
+            <div>
+              <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">${item.course}</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${item.room} • ${item.teacher}</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm" style="color: ${item.color}; background: ${item.color}15">${item.time}</span>
+        `;
+        container.appendChild(card);
+
+        if (day === 2) {
+          const dashCard = card.cloneNode(true);
+          dashClasses.appendChild(dashCard);
+        }
+      });
+    }
+
+    function renderCourses() {
+      const container = document.getElementById('coursesGridContainer');
+      container.innerHTML = '';
+      coursesData.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4';
+        item.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold px-2.5 py-1 rounded-lg" style="color: ${c.color}; background: ${c.color}15">${c.code}</span>
+              <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${c.color}"></span>
+            </div>
+            <h3 class="text-base font-extrabold text-slate-900 dark:text-white mt-3">${c.name}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${c.instructor}</p>
+            <p class="text-xs text-slate-400 mt-0.5">📍 ${c.room}</p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-bold">
+            <span class="text-amber-500">${c.tasksPending} Pending</span>
+            <span class="text-emerald-500">${c.tasksDone} Done</span>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function renderNotes() {
+      const container = document.getElementById('notesGridContainer');
+      container.innerHTML = '';
+      notesData.forEach(n => {
+        const item = document.createElement('div');
+        item.className = 'p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3';
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded-md" style="color: ${n.color}; background: ${n.color}15">${n.course}</span>
+            ${n.pinned ? '<span class="text-xs text-indigo-500 font-bold">📌 Pinned</span>' : ''}
+          </div>
+          <h4 class="text-sm font-extrabold text-slate-900 dark:text-white">${n.title}</h4>
+          <pre class="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl font-mono overflow-x-auto whitespace-pre-wrap">${n.content}</pre>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Pomodoro Timer Logic
+    function updatePomoDisplay() {
+      const m = Math.floor(pomoRemaining / 60).toString().padStart(2, '0');
+      const s = (pomoRemaining % 60).toString().padStart(2, '0');
+      document.getElementById('pomoTimerText').innerText = `${m}:${s}`;
+
+      // Ring circumference is 754
+      const fraction = (pomoDuration - pomoRemaining) / pomoDuration;
+      const offset = 754 - (754 * fraction);
+      document.getElementById('pomoSvgRing').style.strokeDashoffset = offset;
+    }
+
+    function togglePomo() {
+      if (pomoRunning) {
+        clearInterval(pomoInterval);
+        pomoRunning = false;
+        document.getElementById('pomoMainPlayBtn').innerText = '▶';
+      } else {
+        pomoRunning = true;
+        document.getElementById('pomoMainPlayBtn').innerText = '⏸';
+        pomoInterval = setInterval(() => {
+          if (pomoRemaining > 0) {
+            pomoRemaining--;
+            updatePomoDisplay();
+          } else {
+            clearInterval(pomoInterval);
+            pomoRunning = false;
+            pomoSessionCount++;
+            document.getElementById('pomoSessionCounter').innerText = `Session #${pomoSessionCount + 1}`;
+            setPomodoroMode('short');
+          }
+        }, 1000);
+      }
+    }
+
+    function resetPomo() {
+      clearInterval(pomoInterval);
+      pomoRunning = false;
+      document.getElementById('pomoMainPlayBtn').innerText = '▶';
+      pomoRemaining = pomoDuration;
+      updatePomoDisplay();
+    }
+
+    function skipPomo() {
+      resetPomo();
+      setPomodoroMode(pomoMode === 'focus' ? 'short' : 'focus');
+    }
+
+    function setPomodoroMode(mode) {
+      pomoMode = mode;
+      resetPomo();
+
+      ['Focus', 'Short', 'Long'].forEach(m => {
+        const btn = document.getElementById('mode' + m + 'Btn');
+        if (btn) {
+          if (m.toLowerCase() === mode) {
+            btn.className = 'flex-1 py-2 rounded-xl bg-indigo-600 text-white shadow transition font-bold';
+          } else {
+            btn.className = 'flex-1 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition font-semibold';
+          }
+        }
+      });
+
+      if (mode === 'focus') {
+        pomoDuration = 25 * 60;
+        document.getElementById('pomoModeText').innerText = 'DEEP STUDY';
+      } else if (mode === 'short') {
+        pomoDuration = 5 * 60;
+        document.getElementById('pomoModeText').innerText = 'SHORT BREAK';
+      } else {
+        pomoDuration = 15 * 60;
+        document.getElementById('pomoModeText').innerText = 'LONG BREAK';
+      }
+      pomoRemaining = pomoDuration;
+      updatePomoDisplay();
+    }
+
+    function setFocusTask(name) {
+      document.getElementById('pomoLinkedTaskTitle').innerText = name;
+    }
+
+    function setAmbience(sound) {
+      document.getElementById('activeAmbienceLabel').innerText = sound;
+    }
+
+    // Modal Operations
+    function openAddTaskModal() {
+      document.getElementById('addTaskModal').classList.remove('hidden');
+    }
+
+    function closeAddTaskModal() {
+      document.getElementById('addTaskModal').classList.add('hidden');
+    }
+
+    function submitNewTask() {
+      const title = document.getElementById('modalTaskTitle').value;
+      const course = document.getElementById('modalTaskCourse').value;
+      const priority = document.getElementById('modalTaskPriority').value;
+      const due = document.getElementById('modalTaskDue').value;
+
+      if (title.trim()) {
+        tasks.unshift({
+          id: Date.now(),
+          title: title.trim(),
+          course: course,
+          priority: priority,
+          due: due,
+          completed: false,
+          subtasksDone: 0,
+          subtasksTotal: 2
+        });
+        closeAddTaskModal();
+        renderTasks();
+        switchTab('tasks');
+      }
+    }
+
+    function openAddClassModal() {
+      alert('Add Class Dialog: To add more lectures, customize the weekly schedule JSON or use the Flutter app directly!');
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
+    }
+
+    // Run on mount
+    init();
+  </script>
+
+</body>
+</html>
